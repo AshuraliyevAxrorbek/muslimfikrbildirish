@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muslim Shirinliklari: Fikr bildirish</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Asosiy ranglar va shriflar */
+        :root {
+            --dark-red: #8b0000;
+            --primary-white: #ffffff;
+            --star-yellow: #fdd835;
+            --star-gray: #e0e0e0;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--dark-red);
+            color: var(--primary-white);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        /* Sayt ochilganda pastdan tepaga ko'tariladigan animatsiya */
+        .fade-up-animation {
+            animation: fadeUp 1s ease-out;
+        }
+
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        header {
+            text-align: center;
+            width: 100%;
+            margin-top: 40px;
+        }
+
+        header h1 {
+            font-size: 2.8em;
+            margin-bottom: 2px;
+            font-weight: 700;
+        }
+
+        header p {
+            font-size: 1.1em;
+            opacity: 0.5;
+        }
+
+        main {
+            width: 100%;
+            max-width: 450px;
+            padding: 0 20px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Yulduzlar uchun CSS va effektlar */
+        .rating-section h2 {
+            font-size: 2em;
+            margin-bottom: 10px;
+            letter-spacing: 1px;
+            text-align: center;
+        }
+
+        .stars {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .stars span {
+            font-size: 3.5em;
+            color: var(--star-gray);
+            cursor: pointer;
+            transition: all 0.4s ease;
+        }
+
+        .stars span.selected {
+            color: var(--star-yellow);
+            text-shadow: 0 0 15px var(--star-yellow);
+        }
+
+        .stars span:hover {
+            transform: scale(1.2);
+        }
+
+        .stars span.selected:active {
+            transform: scale(1.1);
+            transition: none;
+        }
+
+        /* Forma uchun CSS */
+        #comment-form {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+            width: 100%;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            font-size: 1.1em;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 12px;
+            background-color: rgba(255, 255, 255, 0.95);
+            color: #333;
+            font-size: 1em;
+            outline: none;
+            box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            box-sizing: border-box;
+        }
+
+        .form-group input[type="file"] {
+            background-color: rgba(255, 255, 255, 0.95);
+            padding: 12px;
+            border-radius: 12px;
+            color: #333;
+            cursor: pointer;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.5);
+            transform: scale(1.02);
+        }
+
+        /* Tugmaning yangilangan stili */
+        button[type="submit"] {
+            background-color: var(--primary-white);
+            color: var(--dark-red);
+            border: none;
+            width: 95%; /* Kenglik 95% qilib o'zgartirildi */
+            padding: 18px;
+            border-radius: 12px;
+            font-size: 1.2em;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        button[type="submit"]:hover {
+            background-color: #f0f0f0;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Mobil qurilmalar uchun moslashuvchanlik */
+        @media (max-width: 480px) {
+            header h1 {
+                font-size: 2.2em;
+            }
+            .stars span {
+                font-size: 3em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Muslim Shirinliklari</h1>
+        <p>Fikrlaringiz biz uchun muhim!</p>
+    </header>
+    <main class="fade-up-animation">
+        <div class="rating-section">
+            <h2>Mahsulotni baholang</h2>
+            <div class="stars">
+                <span data-value="1">&#9733;</span>
+                <span data-value="2">&#9733;</span>
+                <span data-value="3">&#9733;</span>
+                <span data-value="4">&#9733;</span>
+                <span data-value="5">&#9733;</span>
+            </div>
+        </div>
+        <form id="comment-form">
+            <div class="form-group">
+                <label for="name">Ismingiz</label>
+                <input type="text" id="name" name="name" required>
+            </div>
+            <div class="form-group">
+                <label for="image">Rasm yoki skrinshot yuklang (majburiy emas)</label>
+                <input type="file" id="image" name="image" accept="image/*">
+            </div>
+            <div class="form-group">
+                <label for="comment">Fikringizni yozib qoldiring</label>
+                <textarea id="comment" name="comment" rows="5" required></textarea>
+            </div>
+            <button type="submit">Tasdiqlash</button>
+        </form>
+    </main>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const stars = document.querySelectorAll('.stars span');
+            const form = document.getElementById('comment-form');
+            let ratingValue = 0;
+
+            // Telegram bot ma'lumotlari
+            const botToken = 'YOUR_BOT_TOKEN_HERE'; // Bot tokeningizni kiriting
+            const chatId = 'YOUR_CHAT_ID_HERE'; // Chat ID raqamingizni kiriting
+
+            // Yulduzlar ustiga bosilganda bajariladigan funksiya
+            stars.forEach(star => {
+                star.addEventListener('click', () => {
+                    const value = parseInt(star.getAttribute('data-value'));
+                    ratingValue = value;
+                    
+                    stars.forEach(s => s.classList.remove('selected'));
+                    
+                    for (let i = 0; i < value; i++) {
+                        stars[i].classList.add('selected');
+                    }
+                });
+            });
+
+            // Fikrni jo'natish tugmasi bosilganda
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+
+                const name = document.getElementById('name').value;
+                const comment = document.getElementById('comment').value;
+                const imageFile = document.getElementById('image').files[0];
+
+                if (ratingValue === 0) {
+                    alert("Iltimos, mahsulotni baholang!");
+                    return;
+                }
+
+                if (name && comment) {
+                    // Xabar matnini shakllantirish
+                    let messageText = `
+                        Yangi fikr:
+                        ⭐ Baho: ${ratingValue} yulduz
+                        👤 Ism: ${name}
+                        💬 Fikr: ${comment}
+                    `;
+
+                    try {
+                        if (imageFile) {
+                            // Rasm yuklanganda alohida yuborish kerak
+                            const formData = new FormData();
+                            formData.append('chat_id', chatId);
+                            formData.append('caption', messageText);
+                            formData.append('photo', imageFile);
+
+                            await fetch(`https://api.telegram.org/bot${botToken}/sendPhoto`, {
+                                method: 'POST',
+                                body: formData
+                            });
+                        } else {
+                            // Faqat matnli xabarni yuborish
+                            await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify({
+                                    chat_id: chatId,
+                                    text: messageText,
+                                    parse_mode: 'HTML'
+                                })
+                            });
+                        }
+
+                        alert(`Rahmat, ${name}! Fikringiz qabul qilindi va botga yuborildi.`);
+
+                        // Formalarni tozalash
+                        form.reset();
+                        stars.forEach(s => s.classList.remove('selected'));
+                        ratingValue = 0;
+
+                    } catch (error) {
+                        console.error("Xatolik: Ma'lumotlarni yuborishda muammo yuz berdi.", error);
+                        alert("Fikringizni yuborishda xatolik yuz berdi. Iltimos, qayta urinib ko'ring.");
+                    }
+                } else {
+                    alert("Iltimos, ismingizni va fikringizni to'ldiring.");
+                }
+            });
+        });
+    </script>
+</body>
+</html>
