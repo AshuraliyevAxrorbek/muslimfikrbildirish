@@ -1,6 +1,6 @@
 import json
 import logging
-from aiogram import Bot, Dispatcher, types, F
+from aiogram import Bot, Dispatcher, types
 from aiogram.utils.exceptions import ChatNotFound, BotBlocked, TelegramAPIError
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, WebAppInfo
 import asyncio
@@ -10,8 +10,8 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 # O'zgaruvchilar
-API_TOKEN = "8382580096:AAHlyf3qGsvEtRUmpYzX_NjABTSpf5R59Ik" # Bot tokeningizni yozing
-ADMIN_CHAT_ID = -1002944106693 # Admin kanal ID'si
+API_TOKEN = "8382580096:AAHlyf3qGsvEtRUmpYzX_NjABTSpf5R59Ik"  # Bot tokeningizni yozing
+ADMIN_CHAT_ID = -1002944106693  # Admin kanal ID'si
 
 # WebApp URL manzilini kiriting
 WEB_APP_URL_MUSLIM = "https://ashuraliyevaxrorbek.github.io/muslimshirinliklari/" # Sizning WebApp manzilingiz
