@@ -287,9 +287,6 @@ document.addEventListener('DOMContentLoaded', () => {
             // Telegram WebApp'ga JSON formatida ma'lumot yuborish
             tg.sendData(JSON.stringify(data));
             
-            // Foydalanuvchiga xabar ko'rsatish
-            alert(`Rahmat, ${name}! Fikringiz qabul qilindi. Botga yuborilmoqda...`);
-            
             // Formalarni tozalash va yulduzlarni boshlang'ich holatiga qaytarish
             form.reset();
             stars.forEach(s => s.classList.remove('selected'));
