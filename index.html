@@ -238,13 +238,13 @@
 
         let ratingValue = 0;
 
-        // Yulduzlar ustiga bosilganda ularni sariq qilish funksiyasi
+        // Yulduzlar ustiga bosilganda bajariladigan funksiya
         stars.forEach(star => {
             star.addEventListener('click', () => {
                 const value = parseInt(star.getAttribute('data-value'));
                 ratingValue = value;
                 
-                // Barcha yulduzlardan 'selected' klassini olib tashlash
+                // Barcha yulduzlardan 'selected' klassini o'chirish
                 stars.forEach(s => s.classList.remove('selected'));
                 
                 // Tanlangan yulduz va undan oldingilarga 'selected' klassini qo'shish
@@ -260,8 +260,9 @@
 
             const name = document.getElementById('name').value.trim();
             const comment = document.getElementById('comment').value.trim();
-            
-            // Ma'lumotlarni to'ldirishni tekshirish
+            const imageFile = document.getElementById('image').files[0];
+
+            // Ma'lumotlar to'ldirilganligini tekshirish
             if (ratingValue === 0) {
                 alert("Iltimos, mahsulotni baholang!");
                 return;
@@ -271,16 +272,26 @@
                 return;
             }
 
-            // Ma'lumotlarni JSON obyektiga jamlash
+            // JSON ma'lumotlarini tayyorlash
             const data = {
                 name: name,
                 rating: ratingValue,
                 comment: comment
             };
-            
+
+            if (imageFile) {
+                data.file = {
+                    name: imageFile.name,
+                    size: imageFile.size,
+                    type: imageFile.type
+                };
+            } else {
+                data.file = "Yuklanmagan";
+            }
+
             // Ma'lumotni Telegram botga yuborish
             tg.sendData(JSON.stringify(data));
-
+            
             // Tasdiqlash xabarini ko'rsatish
             alert("✅ Fikringiz muvaffaqiyatli qabul qilindi!");
             
