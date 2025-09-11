@@ -226,72 +226,77 @@
             <button type="submit">Tasdiqlash</button>
         </form>
     </main>
-<script src="https://telegram.org/js/telegram-web-app.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', () => {
-    const stars = document.querySelectorAll('.stars span');
-    const form = document.getElementById('comment-form');
-    const tg = window.Telegram.WebApp;
-    
-    tg.expand();
-    let ratingValue = 0;
+    const stars = document.querySelectorAll('.stars span');
+    const form = document.getElementById('comment-form');
+    const tg = window.Telegram.WebApp;
+    
+    // WebApp'ni to'liq ekran rejimida ochish
+    tg.expand();
 
-    stars.forEach(star => {
-        star.addEventListener('click', () => {
-            const value = parseInt(star.getAttribute('data-value'));
-            ratingValue = value;
-            
-            stars.forEach(s => s.classList.remove('selected'));
-            
-            for (let i = 0; i < value; i++) {
-                stars[i].classList.add('selected');
-            }
-        });
-    });
+    let ratingValue = 0;
 
-    form.addEventListener('submit', e => {
-        e.preventDefault();
+    // Yulduzlar ustiga bosilganda bajariladigan funksiya
+    stars.forEach(star => {
+        star.addEventListener('click', () => {
+            const value = parseInt(star.getAttribute('data-value'));
+            ratingValue = value;
+            
+            // Barcha yulduzlardan 'selected' klassini o'chirish
+            stars.forEach(s => s.classList.remove('selected'));
+            
+            // Tanlangan yulduz va undan oldingilarga 'selected' klassini qo'shish
+            for (let i = 0; i < value; i++) {
+                stars[i].classList.add('selected');
+            }
+        });
+    });
 
-        const name = document.getElementById('name').value;
-        const comment = document.getElementById('comment').value;
-        const imageFile = document.getElementById('image').files[0];
+    // Forma yuborilganda bajariladigan funksiya
+    form.addEventListener('submit', e => {
+        e.preventDefault();
 
-        if (ratingValue === 0) {
-            alert("Iltimos, mahsulotni baholang!");
-            return;
-        }
+        const name = document.getElementById('name').value;
+        const comment = document.getElementById('comment').value;
+        const imageFile = document.getElementById('image').files[0];
 
-        if (name.trim() && comment.trim()) {
-            const data = {
-                name: name,
-                rating: ratingValue,
-                comment: comment
-            };
+        if (ratingValue === 0) {
+            alert("Iltimos, mahsulotni baholang!");
+            return;
+        }
 
-            if (imageFile) {
-                data.file = {
-                    name: imageFile.name,
-                    size: imageFile.size,
-                    type: imageFile.type
-                };
-            } else {
-                data.file = "Yuklanmagan";
-            }
+        if (name.trim() && comment.trim()) {
+            const data = {
+                name: name,
+                rating: ratingValue,
+                comment: comment
+            };
 
-            // Ma'lumotni Telegram botga yuborish
-            tg.sendData(JSON.stringify(data));
-            
-            // Bu yerda tg.close() olib tashlandi, shuning uchun WebApp ochiq qoladi.
-            
-            // Formalarni tozalash va yulduzlarni boshlang'ich holatiga qaytarish
-            form.reset();
-            stars.forEach(s => s.classList.remove('selected'));
-            ratingValue = 0;
+            if (imageFile) {
+                data.file = {
+                    name: imageFile.name,
+                    size: imageFile.size,
+                    type: imageFile.type
+                };
+            } else {
+                data.file = "Yuklanmagan";
+            }
 
-        } else {
-            alert("Iltimos, ismingizni va fikringizni to'ldiring.");
-        }
-    });
+            // Ma'lumotni Telegram botga yuborish
+            tg.sendData(JSON.stringify(data));
+            
+            // Bu yerda tg.close() olib tashlandi, shuning uchun WebApp ochiq qoladi.
+            
+            // Formalarni tozalash va yulduzlarni boshlang'ich holatiga qaytarish
+            form.reset();
+            stars.forEach(s => s.classList.remove('selected'));
+            ratingValue = 0;
+
+        } else {
+            alert("Iltimos, ismingizni va fikringizni to'ldiring.");
+        }
+    });
 });
 </script>
 </body>
