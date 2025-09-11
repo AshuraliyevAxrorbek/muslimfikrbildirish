@@ -1,77 +1,298 @@
-import json
-import logging
-from aiogram import Bot, Dispatcher, types
-from aiogram.utils.exceptions import ChatNotFound, BotBlocked, TelegramAPIError
-from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, WebAppInfo
-import asyncio
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muslim Shirinliklari: Fikr bildirish</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Asosiy ranglar va shriflar */
+        :root {
+            --dark-red: #8b0000;
+            --primary-white: #ffffff;
+            --star-yellow: #fdd835;
+            --star-gray: #e0e0e0;
+        }
 
-# logging sozlamalari
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--dark-red);
+            color: var(--primary-white);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 110vh;
+            padding: 10px;
+            box-sizing: border-box;
+        }
 
-# O'zgaruvchilar
-API_TOKEN = "8382580096:AAHlyf3qGsvEtRUmpYzX_NjABTSpf5R59Ik"  # Bot tokeningizni yozing
-ADMIN_CHAT_ID = -1002944106693  # Admin kanal ID'si
+        /* Sayt ochilganda pastdan tepaga ko'tariladigan animatsiya */
+        .fade-up-animation {
+            animation: fadeUp 1s ease-out;
+        }
 
-# WebApp URL manzilini kiriting
-WEB_APP_URL_MUSLIM = "https://ashuraliyevaxrorbek.github.io/muslimshirinliklari/" # Sizning WebApp manzilingiz
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
 
-# Bosh menyu klaviaturasi
-main_menu = ReplyKeyboardMarkup(
-    keyboard=[
-        [
-            KeyboardButton(
-                text="📝 Fikr qoldirish",
-                web_app=WebAppInfo(url=WEB_APP_URL_MUSLIM)
-            )
-        ]
-    ],
-    resize_keyboard=True
-)
+        header {
+            text-align: center;
+            width: 100%;
+            margin-top: 40px;
+        }
+        
+        /* Rasm uchun CSS */
+        header img {
+            width: 400px;
+            height: auto;
+            display: block;
+            margin: 0 auto;
+        }
 
-# /start buyrug'ini qabul qilish
-@dp.message_handler(commands=['start'])
-async def start_handler(message: types.Message):
-    await message.answer("Assalomu alaykum! Fikr-mulohazalaringizni qoldiring.", reply_markup=main_menu)
+        header p {
+            font-size: 1.1em;
+            opacity: 0.5;
+        }
 
-# WebAppdan kelgan ma'lumotni qabul qilish
-@dp.message_handler(content_types=types.ContentType.WEB_APP_DATA)
-async def handle_webapp_data(message: types.Message):
-    print("--- WebApp'dan yangi ma'lumot keldi ---")
+        main {
+            width: 100%;
+            max-width: 450px;
+            padding: 0 20px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
 
-    try:
-        data = json.loads(message.web_app_data.data)
-        print("✅ Ma'lumot muvaffaqiyatli tahlil qilindi:", data)
-    except Exception as e:
-        logger.exception("WebApp data parsing error")
-        await message.answer(f"❌ JSON xato: {e}")
-        return
+        /* Yulduzlar uchun CSS va effektlar */
+        .rating-section h2 {
+            font-size: 1.6em;
+            margin-bottom: 5px;
+            letter-spacing: 1px;
+            text-align: center;
+        }
 
-    rating = data.get("rating", "—")
-    name = data.get("name", "—")
-    comment = data.get("comment", "—")
+        .stars {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
 
-    caption = (
-        "<b>Yangi fikr!</b>\n\n"
-        f"⭐ <b>Yulduz:</b> {rating}\n"
-        f"👤 <b>Ism:</b> {name}\n"
-        f"💬 <b>Fikr:</b> {comment}\n\n"
-        "--- Ma'lumotlar ---\n"
-        f"🆔 <b>ID:</b> <code>{message.from_user.id}</code>\n"
-        f"👤 <b>Foydalanuvchi:</b> {message.from_user.full_name}"
-    )
+        .stars span {
+            font-size: 3.5em;
+            color: var(--star-gray);
+            cursor: pointer;
+            transition: all 0.4s ease;
+        }
 
-    try:
-        await bot.send_message(ADMIN_CHAT_ID, caption, parse_mode='HTML')
-        await message.answer("✅ Fikringiz qabul qilindi, rahmat!")
-        print("✅ Ma'lumot admin kanalga yuborildi.")
-    except Exception as e:
-        print(f"❌ Xabar yuborishda xato: {e}")
-        await message.answer("❌ Fikringizni qabul qilishda xato yuz berdi.")
+        .stars span.selected {
+            color: var(--star-yellow);
+            text-shadow: 0 0 15px var(--star-yellow);
+        }
 
-# Botni ishga tushirish
-if __name__ == '__main__':
-    from aiogram import executor
-    bot = Bot(token=API_TOKEN)
-    dp = Dispatcher(bot)
-    executor.start_polling(dp, skip_updates=True)
+        .stars span:hover {
+            transform: scale(1.2);
+        }
+
+        .stars span.selected:active {
+            transform: scale(1.1);
+            transition: none;
+        }
+
+        /* Forma uchun CSS */
+        #comment-form {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+            width: 100%;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            font-size: 1.1em;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 12px;
+            background-color: rgba(255, 255, 255, 0.95);
+            color: #333;
+            font-size: 1em;
+            outline: none;
+            box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            box-sizing: border-box;
+        }
+
+        .form-group input[type="file"] {
+            background-color: rgba(255, 255, 255, 0.95);
+            padding: 12px;
+            border-radius: 12px;
+            color: #333;
+            cursor: pointer;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.5);
+            transform: scale(1.02);
+        }
+
+        /* Tugmaning yangilangan stili */
+        button[type="submit"] {
+            background-color: var(--primary-white);
+            color: var(--dark-red);
+            border: none;
+            width: 100%; 
+            padding: 18px;
+            border-radius: 12px;
+            font-size: 1.2em;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        button[type="submit"]:hover {
+            background-color: #f0f0f0;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Mobil qurilmalar uchun moslashuvchanlik */
+        @media (max-width: 480px) {
+            header h1 {
+                font-size: 2.2em;
+            }
+            .stars span {
+                font-size: 3em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <img src="https://i.postimg.cc/26wgZMSJ/muslim-png.png" alt="Muslim Shirinliklari logotipi">
+        <p>Fikrlaringiz biz uchun muhim!</p>
+    </header>
+    <main class="fade-up-animation">
+        <div class="rating-section">
+            <h2>Mahsulotni baholang</h2>
+            <div class="stars">
+                <span data-value="1">&#9733;</span>
+                <span data-value="2">&#9733;</span>
+                <span data-value="3">&#9733;</span>
+                <span data-value="4">&#9733;</span>
+                <span data-value="5">&#9733;</span>
+            </div>
+        </div>
+        <form id="comment-form">
+            <div class="form-group">
+                <label for="name">Ismingiz</label>
+                <input type="text" id="name" name="name" required>
+            </div>
+            <div class="form-group">
+                <label for="image">Rasm yoki skrinshot (majburiy emas)</label>
+                <input type="file" id="image" name="image" accept="image/*">
+            </div>
+            <div class="form-group">
+                <label for="comment">Fikringizni yozib qoldiring</label>
+                <textarea id="comment" name="comment" rows="5" required></textarea>
+            </div>
+            <button type="submit">Tasdiqlash</button>
+        </form>
+    </main>
+<script>
+    const form = document.getElementById("comment-form");
+    const stars = document.querySelectorAll('.stars span');
+    const tg = window.Telegram.WebApp;
+
+    tg.expand();
+
+    let ratingValue = 0;
+
+    // Yulduzlar uchun rangni o'zgartirish
+    stars.forEach(star => {
+        star.addEventListener('click', () => {
+            ratingValue = parseInt(star.getAttribute('data-value'));
+            stars.forEach(s => s.classList.remove('selected'));
+            for (let i = 0; i < ratingValue; i++) {
+                stars[i].classList.add('selected');
+            }
+        });
+    });
+
+    form.addEventListener("submit", e => {
+        e.preventDefault();
+
+        let name = document.getElementById("name").value.trim();
+        let comment = document.getElementById("comment").value.trim();
+        let imageFile = document.getElementById("image").files[0];
+
+        // Ma'lumotlarni tekshirish
+        if (ratingValue === 0) {
+            alert("Iltimos, mahsulotni baholang!");
+            return;
+        }
+        if (!name || !comment) {
+            alert("Iltimos, ismingizni va fikringizni to'ldiring.");
+            return;
+        }
+
+        // Ma'lumotlarni JSON obyektiga jamlash
+        let data = {
+            name: name,
+            rating: ratingValue,
+            comment: comment
+        };
+        
+        // Rasm fayli uchun kod
+        if (imageFile) {
+            data.file = {
+                name: imageFile.name,
+                size: imageFile.size,
+                type: imageFile.type
+            };
+        } else {
+            data.file = "Yuklanmagan";
+        }
+
+        // Ma'lumotni botga yuborish
+        tg.sendData(JSON.stringify(data));
+        
+        // Forma va yulduzlarni tozalash
+        form.reset();
+        stars.forEach(s => s.classList.remove('selected'));
+        ratingValue = 0;
+        
+        // WebApp oynasini yopish
+        tg.close();
+    });
+</script>
+</body>
+</html>
