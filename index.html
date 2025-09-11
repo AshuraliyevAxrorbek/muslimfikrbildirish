@@ -234,10 +234,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const tg = window.Telegram.WebApp;
     
     tg.expand();
-
     let ratingValue = 0;
 
-    // Yulduzlar ustiga bosilganda bajariladigan funksiya
     stars.forEach(star => {
         star.addEventListener('click', () => {
             const value = parseInt(star.getAttribute('data-value'));
@@ -251,8 +249,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Forma yuborilganda bajariladigan funksiya
-    form.addEventListener('submit', (e) => {
+    form.addEventListener('submit', e => {
         e.preventDefault();
 
         const name = document.getElementById('name').value;
@@ -281,11 +278,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 data.file = "Yuklanmagan";
             }
 
-            // Telegram WebApp'ga JSON formatida ma'lumot yuborish
+            // Ma'lumotni Telegram botga yuborish
             tg.sendData(JSON.stringify(data));
             
-            // WebApp'ni yopish
-            tg.close();
+            // Bu yerda tg.close() olib tashlandi, shuning uchun WebApp ochiq qoladi.
+            
+            // Formalarni tozalash va yulduzlarni boshlang'ich holatiga qaytarish
+            form.reset();
+            stars.forEach(s => s.classList.remove('selected'));
+            ratingValue = 0;
 
         } else {
             alert("Iltimos, ismingizni va fikringizni to'ldiring.");
