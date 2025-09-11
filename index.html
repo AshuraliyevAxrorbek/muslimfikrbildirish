@@ -166,7 +166,7 @@
             background-color: var(--primary-white);
             color: var(--dark-red);
             border: none;
-            width: 100%; /* Kenglik 95% qilib o'zgartirildi */
+            width: 100%; 
             padding: 18px;
             border-radius: 12px;
             font-size: 1.2em;
@@ -226,75 +226,77 @@
             <button type="submit">Tasdiqlash</button>
         </form>
     </main>
-<script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const stars = document.querySelectorAll('.stars span');
-        const form = document.getElementById('comment-form');
-        const tg = window.Telegram.WebApp;
-        
-        tg.expand();
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const stars = document.querySelectorAll('.stars span');
+            const form = document.getElementById('comment-form');
+            const tg = window.Telegram.WebApp;
+            
+            tg.expand();
 
-        let ratingValue = 0;
+            let ratingValue = 0;
 
-        // Yulduzlar ustiga bosilganda bajariladigan funksiya
-        stars.forEach(star => {
-            star.addEventListener('click', () => {
-                const value = parseInt(star.getAttribute('data-value'));
-                ratingValue = value;
-                
-                // Barcha yulduzlardan 'selected' class'ini o'chirish
-                stars.forEach(s => s.classList.remove('selected'));
-                
-                // Tanlangan yulduz va undan oldingilarga 'selected' class'ini qo'shish
-                for (let i = 0; i < value; i++) {
-                    stars[i].classList.add('selected');
+            // Yulduzlar ustiga bosilganda bajariladigan funksiya
+            stars.forEach(star => {
+                star.addEventListener('click', () => {
+                    const value = parseInt(star.getAttribute('data-value'));
+                    ratingValue = value;
+                    
+                    // Barcha yulduzlardan 'selected' class'ini o'chirish
+                    stars.forEach(s => s.classList.remove('selected'));
+                    
+                    // Tanlangan yulduz va undan oldingilarga 'selected' class'ini qo'shish
+                    for (let i = 0; i < value; i++) {
+                        stars[i].classList.add('selected');
+                    }
+                });
+            });
+
+            // Forma yuborilganda bajariladigan funksiya
+            form.addEventListener('submit', (e) => {
+                e.preventDefault();
+
+                const name = document.getElementById('name').value;
+                const comment = document.getElementById('comment').value;
+                const imageFile = document.getElementById('image').files[0];
+
+                if (ratingValue === 0) {
+                    alert("Iltimos, mahsulotni baholang!");
+                    return;
+                }
+
+                if (name && comment) {
+                    const data = {
+                        name: name,
+                        rating: ratingValue,
+                        comment: comment
+                    };
+
+                    if (imageFile) {
+                        data.file = {
+                            name: imageFile.name,
+                            size: imageFile.size,
+                            type: imageFile.type
+                        };
+                    } else {
+                        data.file = "Yuklanmagan";
+                    }
+
+                    tg.sendData(JSON.stringify(data));
+
+                    alert(`Rahmat, ${name}! Fikringiz qabul qilindi. Botga yuborilmoqda...`);
+                    
+                    // Formalarni tozalash va yulduzlarni boshlang'ich holatiga qaytarish
+                    form.reset();
+                    stars.forEach(s => s.classList.remove('selected'));
+                    ratingValue = 0;
+
+                } else {
+                    alert("Iltimos, ismingizni va fikringizni to'ldiring.");
                 }
             });
         });
-
-        // Forma yuborilganda bajariladigan funksiya
-        form.addEventListener('submit', (e) => {
-            e.preventDefault();
-
-            const name = document.getElementById('name').value;
-            const comment = document.getElementById('comment').value;
-            const imageFile = document.getElementById('image').files[0];
-
-            if (ratingValue === 0) {
-                alert("Iltimos, mahsulotni baholang!");
-                return;
-            }
-
-            if (name && comment) {
-                const data = {
-                    name: name,
-                    rating: ratingValue,
-                    comment: comment
-                };
-
-                if (imageFile) {
-                    data.file = {
-                        name: imageFile.name,
-                        size: imageFile.size,
-                        type: imageFile.type
-                    };
-                } else {
-                    data.file = "Yuklanmagan";
-                }
-
-                tg.sendData(JSON.stringify(data));
-
-                alert(`Rahmat, ${name}! Fikringiz qabul qilindi. Botga yuborilmoqda...`);
-                
-                // Formalarni tozalash va yulduzlarni boshlang'ich holatiga qaytarish
-                form.reset();
-                stars.forEach(s => s.classList.remove('selected'));
-                ratingValue = 0;
-
-            } else {
-                alert("Iltimos, ismingizni va fikringizni to'ldiring.");
-            }
-        });
-    });
+    </script>
 </body>
 </html>
