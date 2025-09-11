@@ -230,13 +230,12 @@
         document.addEventListener('DOMContentLoaded', () => {
             const stars = document.querySelectorAll('.stars span');
             const form = document.getElementById('comment-form');
+            const tg = window.Telegram.WebApp;
+            
+            tg.expand();
+
             let ratingValue = 0;
 
-            // Telegram bot ma'lumotlari
-            const botToken = 'YOUR_BOT_TOKEN_HERE'; // Bot tokeningizni kiriting
-            const chatId = 'YOUR_CHAT_ID_HERE'; // Chat ID raqamingizni kiriting
-
-            // Yulduzlar ustiga bosilganda bajariladigan funksiya
             stars.forEach(star => {
                 star.addEventListener('click', () => {
                     const value = parseInt(star.getAttribute('data-value'));
@@ -250,8 +249,7 @@
                 });
             });
 
-            // Fikrni jo'natish tugmasi bosilganda
-            form.addEventListener('submit', async (e) => {
+            form.addEventListener('submit', (e) => {
                 e.preventDefault();
 
                 const name = document.getElementById('name').value;
@@ -264,52 +262,36 @@
                 }
 
                 if (name && comment) {
-                    // Xabar matnini shakllantirish
-                    let messageText = `
-                        Yangi fikr:
-                        ⭐ Baho: ${ratingValue} yulduz
-                        👤 Ism: ${name}
-                        💬 Fikr: ${comment}
-                    `;
+                    // Ma'lumotlarni JavaScript obyekti sifatida yig'ish
+                    const data = {
+                        name: name,
+                        rating: ratingValue,
+                        comment: comment
+                    };
 
-                    try {
-                        if (imageFile) {
-                            // Rasm yuklanganda alohida yuborish kerak
-                            const formData = new FormData();
-                            formData.append('chat_id', chatId);
-                            formData.append('caption', messageText);
-                            formData.append('photo', imageFile);
-
-                            await fetch(`https://api.telegram.org/bot${botToken}/sendPhoto`, {
-                                method: 'POST',
-                                body: formData
-                            });
-                        } else {
-                            // Faqat matnli xabarni yuborish
-                            await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
-                                method: 'POST',
-                                headers: {
-                                    'Content-Type': 'application/json'
-                                },
-                                body: JSON.stringify({
-                                    chat_id: chatId,
-                                    text: messageText,
-                                    parse_mode: 'HTML'
-                                })
-                            });
-                        }
-
-                        alert(`Rahmat, ${name}! Fikringiz qabul qilindi va botga yuborildi.`);
-
-                        // Formalarni tozalash
-                        form.reset();
-                        stars.forEach(s => s.classList.remove('selected'));
-                        ratingValue = 0;
-
-                    } catch (error) {
-                        console.error("Xatolik: Ma'lumotlarni yuborishda muammo yuz berdi.", error);
-                        alert("Fikringizni yuborishda xatolik yuz berdi. Iltimos, qayta urinib ko'ring.");
+                    // Agar rasm yuklangan bo'lsa, uni ma'lumotlarga qo'shamiz
+                    // (Bu ma'lumot fayl nomini saqlaydi, rasmning o'zini emas. Fayl WebApp handler'da alohida ishlash kerak).
+                    if (imageFile) {
+                        data.file = {
+                            name: imageFile.name,
+                            size: imageFile.size,
+                            type: imageFile.type
+                        };
+                    } else {
+                        data.file = "Yuklanmagan";
                     }
+
+                    // Telegram WebApp'ga ma'lumotlarni JSON formatida yuborish
+                    tg.sendData(JSON.stringify(data));
+
+                    // Foydalanuvchiga xabar
+                    alert(`Rahmat, ${name}! Fikringiz qabul qilindi. Botga yuborilmoqda...`);
+                    
+                    // Formalarni tozalash
+                    form.reset();
+                    stars.forEach(s => s.classList.remove('selected'));
+                    ratingValue = 0;
+
                 } else {
                     alert("Iltimos, ismingizni va fikringizni to'ldiring.");
                 }
