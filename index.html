@@ -228,82 +228,72 @@
     </main>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const stars = document.querySelectorAll('.stars span');
-        const form = document.getElementById('comment-form');
-        const tg = window.Telegram.WebApp;
-        
-        // WebApp'ni to'liq ekran rejimida ochish
-        tg.expand();
+document.addEventListener('DOMContentLoaded', () => {
+    const stars = document.querySelectorAll('.stars span');
+    const form = document.getElementById('comment-form');
+    const tg = window.Telegram.WebApp;
+    
+    // WebApp'ni to'liq ekran rejimida ochish
+    tg.expand();
 
-        let ratingValue = 0;
+    let ratingValue = 0;
 
-        // Yulduzlar ustiga bosilganda bajariladigan funksiya
-        stars.forEach(star => {
-            star.addEventListener('click', () => {
-                const value = parseInt(star.getAttribute('data-value'));
-                ratingValue = value;
-                
-                // Barcha yulduzlardan 'selected' klassini o'chirish
-                stars.forEach(s => s.classList.remove('selected'));
-                
-                // Tanlangan yulduz va undan oldingilarga 'selected' klassini qo'shish
-                for (let i = 0; i < value; i++) {
-                    stars[i].classList.add('selected');
-                }
-            });
-        });
-
-        // Forma yuborilganda bajariladigan funksiya
-        form.addEventListener('submit', e => {
-            e.preventDefault();
-
-            const name = document.getElementById('name').value.trim();
-            const comment = document.getElementById('comment').value.trim();
-            const imageFile = document.getElementById('image').files[0];
-
-            // Ma'lumotlar to'ldirilganligini tekshirish
-            if (ratingValue === 0) {
-                alert("Iltimos, mahsulotni baholang!");
-                return;
-            }
-            if (!name || !comment) {
-                alert("Iltimos, ismingizni va fikringizni to'ldiring.");
-                return;
-            }
-
-            // JSON ma'lumotlarini tayyorlash
-            const data = {
-                name: name,
-                rating: ratingValue,
-                comment: comment
-            };
-
-            if (imageFile) {
-                data.file = {
-                    name: imageFile.name,
-                    size: imageFile.size,
-                    type: imageFile.type
-                };
-            } else {
-                data.file = "Yuklanmagan";
-            }
-
-            // Ma'lumotni Telegram botga yuborish
-            tg.sendData(JSON.stringify(data));
+    // Yulduzlarga hodisa qo'shish
+    stars.forEach(star => {
+        star.addEventListener('click', () => {
+            const value = parseInt(star.getAttribute('data-value'));
+            ratingValue = value;
             
-            // Tasdiqlash xabarini ko'rsatish
-            alert("✅ Fikringiz muvaffaqiyatli qabul qilindi va botga yuborilmoqda!");
-            
-            // Formalarni tozalash va yulduzlarni boshlang'ich holatiga qaytarish
-            form.reset();
+            // Barcha yulduzlardan 'selected' klassini olib tashlash
             stars.forEach(s => s.classList.remove('selected'));
-            ratingValue = 0;
             
-            // Oynani yopish
-            // tg.close();
+            // Tanlangan yulduz va undan oldingilarga 'selected' klassini qo'shish
+            for (let i = 0; i < value; i++) {
+                stars[i].classList.add('selected');
+            }
         });
     });
+
+    // Forma yuborilganda bajariladigan funksiya
+    form.addEventListener('submit', e => {
+        e.preventDefault();
+
+        const name = document.getElementById('name').value.trim();
+        const comment = document.getElementById('comment').value.trim();
+        // Fayl yuklash funksiyasi hozircha o'chirilgan, faqat matn yuboriladi.
+        
+        // Ma'lumotlarni to'ldirishni tekshirish
+        if (ratingValue === 0) {
+            alert("Iltimos, mahsulotni baholang!");
+            return;
+        }
+        if (!name || !comment) {
+            alert("Iltimos, ismingizni va fikringizni to'ldiring.");
+            return;
+        }
+
+        // Ma'lumotlarni JSON obyektiga jamlash
+        const data = {
+            name: name,
+            rating: ratingValue,
+            comment: comment
+        };
+        
+        // Ma'lumotni Telegram botga yuborish
+        tg.sendData(JSON.stringify(data));
+
+        // Tasdiqlash xabarini ko'rsatish
+        alert("✅ Fikringiz muvaffaqiyatli qabul qilindi!");
+        
+        // Formalarni tozalash va yulduzlarni boshlang'ich holatiga qaytarish
+        form.reset();
+        stars.forEach(s => s.classList.remove('selected'));
+        ratingValue = 0;
+        
+        // WebApp oynasini yopish
+        tg.close();
+    });
+});
 </script>
 </body>
 </html>
