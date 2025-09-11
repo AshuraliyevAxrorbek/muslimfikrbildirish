@@ -232,21 +232,21 @@ document.addEventListener('DOMContentLoaded', () => {
     const form = document.getElementById('comment-form');
     const tg = window.Telegram.WebApp;
     
-    // WebApp'ni to'liq ekran rejimida ochish
+    // Telegram WebApp'ni to'liq ekran rejimiga kengaytiradi
     tg.expand();
 
     let ratingValue = 0;
 
-    // Yulduzlar ustiga bosilganda bajariladigan funksiya
+    // Yulduzlarni bosilganda ularni sariq qilish funksiyasi
     stars.forEach(star => {
         star.addEventListener('click', () => {
             const value = parseInt(star.getAttribute('data-value'));
             ratingValue = value;
             
-            // Barcha yulduzlardan 'selected' klassini o'chirish
+            // Barcha yulduzlardan "selected" klassini olib tashlash
             stars.forEach(s => s.classList.remove('selected'));
             
-            // Tanlangan yulduz va undan oldingilarga 'selected' klassini qo'shish
+            // Tanlangan yulduz va undan oldingilariga "selected" klassini qo'shish
             for (let i = 0; i < value; i++) {
                 stars[i].classList.add('selected');
             }
@@ -257,11 +257,12 @@ document.addEventListener('DOMContentLoaded', () => {
     form.addEventListener('submit', e => {
         e.preventDefault();
 
+        // Forma maydonlaridan ma'lumotlarni olish
         const name = document.getElementById('name').value.trim();
         const comment = document.getElementById('comment').value.trim();
         const imageFile = document.getElementById('image').files[0];
 
-        // Ma'lumotlar to'ldirilganligini tekshirish
+        // Ma'lumotlarni to'ldirishni tekshirish
         if (ratingValue === 0) {
             alert("Iltimos, mahsulotni baholang!");
             return;
@@ -271,13 +272,14 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        // JSON ma'lumotlarini tayyorlash
+        // Ma'lumotlarni JSON obyektiga jamlash
         const data = {
             name: name,
             rating: ratingValue,
             comment: comment
         };
 
+        // Agar rasm yuklangan bo'lsa, uning ma'lumotlarini qo'shish
         if (imageFile) {
             data.file = {
                 name: imageFile.name,
@@ -288,13 +290,13 @@ document.addEventListener('DOMContentLoaded', () => {
             data.file = "Yuklanmagan";
         }
 
-        // Ma'lumotni Telegram botga yuborish
+        // Ma'lumotlarni Telegram botga yuborish
         tg.sendData(JSON.stringify(data));
         
         // Tasdiqlash xabarini ko'rsatish
         alert("✅ Ma'lumotlaringiz muvaffaqiyatli yuborildi!");
         
-        // Formalarni tozalash va yulduzlarni boshlang'ich holatiga qaytarish
+        // Formalarni tozalash
         form.reset();
         stars.forEach(s => s.classList.remove('selected'));
         ratingValue = 0;
