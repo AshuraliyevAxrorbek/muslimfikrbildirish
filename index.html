@@ -226,77 +226,75 @@
             <button type="submit">Tasdiqlash</button>
         </form>
     </main>
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const stars = document.querySelectorAll('.stars span');
-            const form = document.getElementById('comment-form');
-            const tg = window.Telegram.WebApp;
-            
-            tg.expand();
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const stars = document.querySelectorAll('.stars span');
+        const form = document.getElementById('comment-form');
+        const tg = window.Telegram.WebApp;
+        
+        tg.expand();
 
-            let ratingValue = 0;
+        let ratingValue = 0;
 
-            stars.forEach(star => {
-                star.addEventListener('click', () => {
-                    const value = parseInt(star.getAttribute('data-value'));
-                    ratingValue = value;
-                    
-                    stars.forEach(s => s.classList.remove('selected'));
-                    
-                    for (let i = 0; i < value; i++) {
-                        stars[i].classList.add('selected');
-                    }
-                });
-            });
-
-            form.addEventListener('submit', (e) => {
-                e.preventDefault();
-
-                const name = document.getElementById('name').value;
-                const comment = document.getElementById('comment').value;
-                const imageFile = document.getElementById('image').files[0];
-
-                if (ratingValue === 0) {
-                    alert("Iltimos, mahsulotni baholang!");
-                    return;
-                }
-
-                if (name && comment) {
-                    // Ma'lumotlarni JavaScript obyekti sifatida yig'ish
-                    const data = {
-                        name: name,
-                        rating: ratingValue,
-                        comment: comment
-                    };
-
-                    // Agar rasm yuklangan bo'lsa, uni ma'lumotlarga qo'shamiz
-                    // (Bu ma'lumot fayl nomini saqlaydi, rasmning o'zini emas. Fayl WebApp handler'da alohida ishlash kerak).
-                    if (imageFile) {
-                        data.file = {
-                            name: imageFile.name,
-                            size: imageFile.size,
-                            type: imageFile.type
-                        };
-                    } else {
-                        data.file = "Yuklanmagan";
-                    }
-
-                    // Telegram WebApp'ga ma'lumotlarni JSON formatida yuborish
-                    tg.sendData(JSON.stringify(data));
-
-                    // Foydalanuvchiga xabar
-                    alert(`Rahmat, ${name}! Fikringiz qabul qilindi. Botga yuborilmoqda...`);
-                    
-                    // Formalarni tozalash
-                    form.reset();
-                    stars.forEach(s => s.classList.remove('selected'));
-                    ratingValue = 0;
-
-                } else {
-                    alert("Iltimos, ismingizni va fikringizni to'ldiring.");
+        // Yulduzlar ustiga bosilganda bajariladigan funksiya
+        stars.forEach(star => {
+            star.addEventListener('click', () => {
+                const value = parseInt(star.getAttribute('data-value'));
+                ratingValue = value;
+                
+                // Barcha yulduzlardan 'selected' class'ini o'chirish
+                stars.forEach(s => s.classList.remove('selected'));
+                
+                // Tanlangan yulduz va undan oldingilarga 'selected' class'ini qo'shish
+                for (let i = 0; i < value; i++) {
+                    stars[i].classList.add('selected');
                 }
             });
         });
-    </script>
+
+        // Forma yuborilganda bajariladigan funksiya
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            const name = document.getElementById('name').value;
+            const comment = document.getElementById('comment').value;
+            const imageFile = document.getElementById('image').files[0];
+
+            if (ratingValue === 0) {
+                alert("Iltimos, mahsulotni baholang!");
+                return;
+            }
+
+            if (name && comment) {
+                const data = {
+                    name: name,
+                    rating: ratingValue,
+                    comment: comment
+                };
+
+                if (imageFile) {
+                    data.file = {
+                        name: imageFile.name,
+                        size: imageFile.size,
+                        type: imageFile.type
+                    };
+                } else {
+                    data.file = "Yuklanmagan";
+                }
+
+                tg.sendData(JSON.stringify(data));
+
+                alert(`Rahmat, ${name}! Fikringiz qabul qilindi. Botga yuborilmoqda...`);
+                
+                // Formalarni tozalash va yulduzlarni boshlang'ich holatiga qaytarish
+                form.reset();
+                stars.forEach(s => s.classList.remove('selected'));
+                ratingValue = 0;
+
+            } else {
+                alert("Iltimos, ismingizni va fikringizni to'ldiring.");
+            }
+        });
+    });
 </body>
 </html>
